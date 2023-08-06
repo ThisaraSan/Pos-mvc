@@ -433,6 +433,8 @@ public class CustomerView extends javax.swing.JFrame {
                 custCityText.setText(customerModel.getCity());
                 custProvinceText.setText(customerModel.getProvince());
                 custZipText.setText(customerModel.getZip());
+            } else{
+                JOptionPane.showMessageDialog(this, "Customer Not Found");
             }
         } catch (SQLException ex) {
             Logger.getLogger(CustomerView.class.getName()).log(Level.SEVERE, null, ex);
