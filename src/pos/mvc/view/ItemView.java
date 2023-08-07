@@ -97,9 +97,19 @@ public class ItemView extends javax.swing.JFrame {
 
         updateItemButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         updateItemButton.setText("Update Item");
+        updateItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateItemButtonActionPerformed(evt);
+            }
+        });
 
         deleteItemButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         deleteItemButton.setText("Delete Item");
+        deleteItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteItemButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout formPanelLayout = new javax.swing.GroupLayout(formPanel);
         formPanel.setLayout(formPanelLayout);
@@ -235,6 +245,14 @@ public class ItemView extends javax.swing.JFrame {
         searchItem();
     }//GEN-LAST:event_itemTableMouseClicked
 
+    private void updateItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateItemButtonActionPerformed
+        updateItem();
+    }//GEN-LAST:event_updateItemButtonActionPerformed
+
+    private void deleteItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemButtonActionPerformed
+        deleteItem();
+    }//GEN-LAST:event_deleteItemButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel basePanel;
@@ -312,7 +330,7 @@ public class ItemView extends javax.swing.JFrame {
         try {
             String itemCode = itemTable.getValueAt(itemTable.getSelectedRow(), 0).toString();
             ItemModel itemModel = itemController.searchItem(itemCode);
-            
+
             if (itemModel != null) {
                 itemCodeText.setText(itemModel.getItemCode());
                 descriptionText.setText(itemModel.getDescription());
@@ -322,6 +340,36 @@ public class ItemView extends javax.swing.JFrame {
             } else {
                 JOptionPane.showMessageDialog(this, "Item Not Found");
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void updateItem() {
+        try {
+            ItemModel itemModel = new ItemModel(itemCodeText.getText(),
+                    descriptionText.getText(),
+                    packSizeText.getText(),
+                    Double.parseDouble(unitPriceText.getText()),
+                    Integer.parseInt(qohText.getText()));
+            String resp = itemController.updateItem(itemModel);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllItems();
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+    private void deleteItem() {
+        try {
+            String itemCode = itemCodeText.getText();
+            String resp = itemController.deleteItem(itemCode);
+            JOptionPane.showMessageDialog(this, resp);
+            clear();
+            loadAllItems();
         } catch (SQLException ex) {
             Logger.getLogger(ItemView.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(this, ex.getMessage());
